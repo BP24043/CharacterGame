@@ -1,3 +1,5 @@
+import Data.DataLoader;
+
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -32,6 +34,9 @@ public class Main {
         }
 
         output.print("おわり");
+
+        DataLoader dataLoader = new DataLoader();
+
 
     }
 }
