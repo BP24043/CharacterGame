@@ -16,6 +16,8 @@ public class DataLoader {
     private int healthData[] = new int[HIRAGANA_COUNT];
     private int attackData[] = new int[HIRAGANA_COUNT];
     private int speedData[] = new int[HIRAGANA_COUNT];
+    private int magicData[] = new int[HIRAGANA_COUNT];
+    private int magicCostData[] = new int[HIRAGANA_COUNT];
 
     public DataLoader(){
 
@@ -43,16 +45,6 @@ public class DataLoader {
         } catch(IOException e){
             System.err.println("ファイル読み込みにエラーが起こったらしい...");
             e.printStackTrace();
-        }
-
-
-        System.out.println("読み込んだデータ\n");
-        for(int i = 0; i < HIRAGANA_COUNT; i++){
-            System.out.println("name = " + nameData[i]);
-            System.out.println("healthData = " + healthData[i]);
-            System.out.println("attackData = " + attackData[i]);
-            System.out.println("speedData = " + speedData[i]);
-            System.out.println("\n");
         }
     }
 }
