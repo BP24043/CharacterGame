@@ -1,6 +1,3 @@
-import Data.DataLoader;
-
-import java.io.IOException;
 import java.util.Scanner;
 
 /*
@@ -17,25 +14,43 @@ import java.util.Scanner;
 
 public class Main {
 
+    public static String userName;
+
     public static void main(String[] args) {
+
+        String userName;
 
         Scanner scan = new Scanner(System.in);
         Input input = new Input();
         Output output = new Output();
-        String inputString = input.getInput();
+        Story story = new Story();
+        Rest rest = new Rest();
+        Battle battle = new Battle();
 
-        output.print("入力された文字は「"+inputString+"」です");
+        story.startStory(0);
+
+        story.startStory(1);
+
+        //初回の休憩ターンは強化できない
+        rest.noRest();
+
+
+
+        battle.start();
+
+
+
+
 
         try{
             Thread.sleep(1000);
         } catch (InterruptedException e){
-            output.print("スリープが中断された...だと？！");
+            output.printSystem("スリープが中断された...だと？！");
             Thread.currentThread().interrupt();
         }
 
-        output.print("おわり");
+        output.printSystem("おわり");
 
-        DataLoader dataLoader = new DataLoader();
 
 
     }
