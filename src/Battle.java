@@ -1,4 +1,3 @@
-import javax.xml.crypto.Data;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Executors;
@@ -7,6 +6,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+
 
 public class Battle {
 
@@ -14,7 +16,9 @@ public class Battle {
     Input input = new Input();
 
     public AtomicInteger enemyHealth = new AtomicInteger(1000);
+    public int enemyAttackPlus = 0;
     public AtomicInteger characterHealth = new AtomicInteger();
+    public int characterHealthPlus = 0;
     public int level = 1;
 
     private ScheduledExecutorService scheduler;
@@ -24,8 +28,78 @@ public class Battle {
 
     private int whatEnemy;
 
-    public void start(Character[] characters){
-        if(characters == null || characters.length == 0){
+    private interface Magic {
+        void useMagic(Character[] characters, Character user, Battle battle);
+    }
+
+    private final Map<Integer, Magic> magicMap = new ConcurrentHashMap<>();
+
+    public Battle() {
+        magicMap.put(0, (characters, user, battle) -> {
+            // Magic_0の具体的な効果をここに実装
+        });
+        magicMap.put(1, (characters, user, battle) -> {
+            // Magic_1の具体的な効果をここに実装
+        });
+        magicMap.put(2, (characters, user, battle) -> {
+            battle.enemyAttackPlus += user.getMagicPower();
+        });
+        magicMap.put(3, (characters, user, battle) -> {
+            // Magic_3の具体的な効果をここに実装
+        });
+        magicMap.put(4, (characters, user, battle) -> {
+            for (Character character : characters) {
+                if (character != null) {
+                    character.setHealthByYourSelf(character.getHealth() + user.getMagicPower());
+                }
+            }
+            battle.updateCharacterHealth(characters);
+        });
+        magicMap.put(5, (characters, user, battle) -> {
+            user.setSpeedByYourSelf(user.getSpeed() + user.getMagicPower());
+        });
+        magicMap.put(6, (characters, user, battle) -> {
+            for (Character character : characters) {
+                if (character != null) {
+                    character.setHealthByYourSelf(character.getHealth() + user.getMagicPower());
+                }
+            }
+            user.setSpeedByYourSelf(user.getSpeed() + user.getMagicPower());
+            battle.updateCharacterHealth(characters);
+        });
+        magicMap.put(7, (characters, user, battle) -> {
+            user.setSpeedByYourSelf(user.getSpeed() + user.getMagicPower());
+        });
+        magicMap.put(8, (characters, user, battle) -> {
+            for (Character character : characters) {
+                if (character != null) {
+                    character.setHealthByYourSelf(character.getHealth() + user.getMagicPower());
+                }
+            }
+            battle.updateCharacterHealth(characters);
+        });
+        magicMap.put(9, (characters, user, battle) -> {
+            for (Character character : characters) {
+                if (character != null) {
+                    character.setHealthByYourSelf(character.getHealth() + user.getMagicPower());
+                }
+            }
+            user.setSpeedByYourSelf(user.getSpeed() + user.getMagicPower());
+            battle.updateCharacterHealth(characters);
+        });
+        magicMap.put(10, (characters, user, battle) -> {
+            for (Character character : characters) {
+                if (character != null) {
+                    character.setHealthByYourSelf(character.getHealth() + user.getMagicPower());
+                }
+            }
+            user.setSpeedByYourSelf(user.getSpeed() + user.getMagicPower());
+            battle.updateCharacterHealth(characters);
+        });
+    }
+
+    public void start(Character[] characters) {
+        if (characters == null || characters.length == 0) {
             System.err.println("なんか渡されたcharactersがエラーだ！");
             return;
         }
@@ -43,42 +117,30 @@ public class Battle {
             System.out.println("スレッドが中断されました。");
         }
 
-        enemyHealth = new AtomicInteger((int) (100 * this.level * 0.4f));
+        enemyHealth = new AtomicInteger((int) (DataLoader.getInstance().getEnemyHealthData(whatEnemy) + DataLoader.getInstance().getEnemyHealthData(whatEnemy) * this.level * 0.4f));
         scheduler = Executors.newScheduledThreadPool(characters.length);
 
-        int healthAmount = 0;
-        for(Character character: characters){
-            if(character != null)
-                healthAmount += character.getHealth();
-        }
-        characterHealth = new AtomicInteger(healthAmount);
+        characterHealth = new AtomicInteger(calcTotalCharacterHealth(characters));
 
         terminationTaskFuture = scheduler.schedule(() -> {
             output.printSystem("");
             output.printSystem("敵が疲れ果てて倒れてしまった！\n");
             endBattle();
-        },15,TimeUnit.SECONDS);
+        }, 15, TimeUnit.SECONDS);
 
-        long firstDeleyMs = 0;
+        long firstDelayMs = 0;
         final long STAGGER_DELAY_MS = 500;
 
-
-
-        int enemyAttackDamage = (int) (this.level * DataLoader.getInstance().getEnemyAttackData(this.whatEnemy));
-
         Runnable enemyAttackTask = () -> {
-            // 戦闘が終了しているか、キャラクターの体力が0以下なら攻撃を停止
             if (characterHealth.get() <= 0 || scheduler.isShutdown()) {
                 return;
             }
 
-            // characterHealthを減少させる
-            int remainingCharacterHealth = characterHealth.addAndGet(-enemyAttackDamage);
-            output.printSystem("【敵の攻撃】キャラクターに" + enemyAttackDamage + "ダメージ！" + " 残り文字たちの体力：" + remainingCharacterHealth);
+            int damage = this.level * (DataLoader.getInstance().getEnemyAttackData(this.whatEnemy) + enemyAttackPlus);
+            int remainingCharacterHealth = characterHealth.addAndGet(-damage);
+            output.printSystem("【敵の攻撃】キャラクターに" + damage + "ダメージ！" + " 残り文字たちの体力：" + (remainingCharacterHealth + characterHealthPlus));
 
-            // キャラクターの体力が0以下になった場合の処理
-            if (remainingCharacterHealth <= 0) {
-                // 戦闘終了
+            if (remainingCharacterHealth + characterHealthPlus <= 0) {
                 defeatBattle();
             }
         };
@@ -86,66 +148,81 @@ public class Battle {
         ScheduledFuture<?> enemyAttackFuture = scheduler.scheduleAtFixedRate(enemyAttackTask, 1, 1, TimeUnit.SECONDS);
         scheduledTasks.add(enemyAttackFuture);
 
-
-
-        for(Character character: characters){
+        for (Character character : characters) {
             if (character == null) {
                 continue;
             }
-
-            int attack = character.getAttack();
-            long interval = Math.max(1, character.getSpeed()) * 100L;
 
             Runnable attackTask = () -> {
                 if (enemyHealth.get() <= 0) {
                     return;
                 }
 
-                //魔法が発動するか
-                if(character.getNowMagicCost() == character.getMagicCost()){
+                if (character.getNowMagicCost() >= character.getMagicCost()) {
                     output.printSystem("【" + character.getName() + "が魔法を発動！】「" + DataLoader.getInstance().getMagicBeforeMessageData(character.getMagic()) + DataLoader.getInstance().getMagicMessageData(character.getMagic()) + character.getMagicPower() + DataLoader.getInstance().getMagicAfterMessageData(character.getMagic()) + "」");
                     character.setNowMagicCost(0);
-                }
-                else{ //普通に攻撃するか
-                    int remainingHealth = enemyHealth.addAndGet(-attack);
-                    output.printSystem("【" + character.getName() + "の攻撃】" + attack + "ダメージを与えた！"+ " 残り敵体力：" + enemyHealth + " 残り戦闘時間：" + getRemainingTimeSeconds() + "秒");
+
+                    Magic magic = magicMap.get(character.getMagic());
+                    if (magic != null) {
+                        magic.useMagic(characters, character, this);
+                    } else {
+                        System.err.println("存在しない魔法を打とうとしています！マジックID: " + character.getMagic());
+                    }
+                } else {
+                    int remainingHealth = enemyHealth.addAndGet(-character.getAttack());
+                    output.printSystem("【" + character.getName() + "の攻撃】" + character.getAttack() + "ダメージを与えた！" + " 残り敵体力：" + enemyHealth + " 残り戦闘時間：" + getRemainingTimeSeconds() + "秒");
                     character.setNowMagicCost(1);
-                    if(remainingHealth <= 0){
+                    if (remainingHealth <= 0) {
                         endBattle();
                     }
                 }
-
-
             };
 
-
-            for(Character character2: characters) {
-                if (character2 == null) {
-                    continue;
-                }
-            }
-
-            ScheduledFuture<?> task = scheduler.scheduleAtFixedRate(attackTask, firstDeleyMs, interval, TimeUnit.MILLISECONDS);
+            ScheduledFuture<?> task = scheduler.scheduleAtFixedRate(attackTask, firstDelayMs, calculateInterval(character.getSpeed()), TimeUnit.MILLISECONDS);
             scheduledTasks.add(task);
 
-            firstDeleyMs += STAGGER_DELAY_MS;
-
+            firstDelayMs += STAGGER_DELAY_MS;
         }
     }
 
-    private long getRemainingTimeSeconds(){
-        if(terminationTaskFuture != null && !terminationTaskFuture.isDone()){
+    public void addEnemyAttackPlus(int amount) {
+        this.enemyAttackPlus += amount;
+    }
+
+    public void updateCharacterHealth(Character[] characters) {
+        this.characterHealth.set(calcTotalCharacterHealth(characters));
+    }
+
+    public void setCharacterHealthPlus(int amount) {
+        this.characterHealthPlus = amount;
+    }
+
+    private int calcTotalCharacterHealth(Character[] characters) {
+        int healthAmount = 0;
+        for (Character character : characters) {
+            if (character != null)
+                healthAmount += character.getHealth();
+        }
+        return healthAmount;
+    }
+
+    private long calculateInterval(int speed) {
+        return Math.max(1, speed) * 100L;
+    }
+
+    private long getRemainingTimeSeconds() {
+        if (terminationTaskFuture != null && !terminationTaskFuture.isDone()) {
             return terminationTaskFuture.getDelay(TimeUnit.SECONDS);
         }
         return 0;
     }
 
-    private void endBattle(){
-        if(scheduler == null || scheduler.isShutdown()){
+    private void endBattle() {
+        if (scheduler == null || scheduler.isShutdown()) {
             return;
         }
 
-        for(ScheduledFuture<?> task : scheduledTasks){
+        for (ScheduledFuture<?> task : scheduledTasks) {
             task.cancel(false);
         }
 
@@ -165,18 +242,15 @@ public class Battle {
             System.out.println("スレッドが中断されました。");
         }
 
-
-
         Main.Rest();
     }
 
-
-    private void defeatBattle(){
-        if(scheduler == null || scheduler.isShutdown()){
+    private void defeatBattle() {
+        if (scheduler == null || scheduler.isShutdown()) {
             return;
         }
 
-        for(ScheduledFuture<?> task : scheduledTasks){
+        for (ScheduledFuture<?> task : scheduledTasks) {
             task.cancel(false);
         }
 
@@ -198,9 +272,7 @@ public class Battle {
         Main.GameOver();
     }
 
-
-    public int getLevel(){
+    public int getLevel() {
         return this.level;
     }
-
 }

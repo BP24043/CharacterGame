@@ -41,6 +41,10 @@ public class Main {
     }
 
     public static void Rest(){
+        Story story = new Story();
+        if(battle.level == 5){
+            story.startStory(3);
+        }
 
         Rest rest = new Rest();
 

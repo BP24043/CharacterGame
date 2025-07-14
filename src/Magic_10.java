@@ -1,3 +1,13 @@
+public class Magic_10 implements Magic{
+    public void useMagic(Character[] allCharacter, Character magicianCharacter){
+        for(Character childCharacter: allCharacter){
+            childCharacter.setHealthByYourSelf(childCharacter.getHealth() * magicianCharacter.getMagicPower());
+        }
+        magicianCharacter.setSpeedByYourSelf(3);
+    }
+}
+
+/*
 番号,名前,前メッセージ,単位,効力,後メッセージ
 0,一致団結だ！,リーダーシップにより全員の攻撃力が,＋,2,上昇！
 1,力を分けてくれーっ！,勝手に味方の攻撃力を吸い取って攻撃力,✕,2,上昇！
@@ -10,6 +20,4 @@
 8,全体回復,全員の体力を,＋,10,した！
 9,超回復,全員の体力を,✕,2,した！
 10,延命,自身の素早さを3に固定し、自身の体力を,✕,4,にした！
-11,一刀両断,敵の体力を,✕ 1 / ,2,にした！
-12,追撃,敵に,＋,15,ダメージを与えた！
-13,闇討ち,敵の攻撃力を,✕ 1 / ,2, にした！
+ */

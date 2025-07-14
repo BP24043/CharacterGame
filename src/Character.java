@@ -1,3 +1,4 @@
+
 public class Character {
     private int characterNumber;
     private String name;
@@ -19,6 +20,23 @@ public class Character {
         this.magic = magic;
         this.magicCost = magicCost;
         this.magicPower = magicPower;
+    }
+
+    public Character(Character other){
+        if(other != null){
+            this.characterNumber = other.characterNumber;
+            this.name = other.name;
+            this.health = other.health;
+            this.attack = other.attack;
+            this.speed = other.speed;
+            this.magic = other.magic;
+            this.magicCost = other.magicCost;
+            this.magicPower = other.magicPower;
+        }
+    }
+
+    public Character(){
+
     }
 
     public int getCharacterNumber(){

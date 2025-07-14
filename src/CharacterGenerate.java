@@ -63,7 +63,12 @@ public class CharacterGenerate {
     }
 
     public Character[] getCharacters(){
-        return character;
+        activeCharacter = new Character[character.length];
+        for(int i = 0; i < character.length; i++){
+            if(character[i] != null)
+                activeCharacter[i] = new Character(character[i]);
+        }
+        return activeCharacter;
     }
 
 

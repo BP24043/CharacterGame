@@ -150,6 +150,45 @@ public class Story {
 
         }
         else if(type == 3){
+            output.printSystem("～エンディング～");
+            output.printSystem("なんとか、あなたは地下5階に辿り着くことができました。");
+            output.printSystem("そこには杖が入っていた箱と同じ見た目の箱がありました");
+
+            input.getEnter();
+
+            output.printSystem("開けてみると、欠けていたREAD MEの紙片が...。");
+            output.printSystem("あなたはその内容を読んでみることにします。");
+
+            input.getEnter();
+
+            output.printSystem("使い方②：");
+            output.printSystem("杖の使用を止める際は、底部のスイッチを押してください。");
+            output.printSystem("文字は消え、使用者の名前は元に戻ります。");
+
+            input.getEnter();
+
+            output.printSystem("えっ？");
+
+            input.getEnter();
+
+            output.printSystem("...カチッ");
+
+            input.getEnter();
+
+            output.printCharacter("...なんてこったい！");
+
+            input.getEnter();
+
+            output.printCharacter("めでたしめでたし");
+            output.printSystem("Thank You For Playing!");
+
+            input.getEnter();
+
+            output.printSystem("※ここからはエンドレスモードになります！");
+            output.printSystem("　どこまでも続くダンジョンを踏破し、");
+            output.printSystem("　あなたの名前の強さを証明しよう！！！");
+
+            input.getEnter();
 
         }
         else if(type == 444){
