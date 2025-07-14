@@ -9,12 +9,13 @@ import java.util.Scanner;
 6.パッケージの宣言と使用
 7.ファイル、ネットワーク入力、もしくは出力
 8.Streamを使用
-
  */
 
 public class Main {
 
     public static String userName;
+    public static int level = 1;
+    public static Battle battle = new Battle();
 
     public static void main(String[] args) {
 
@@ -25,33 +26,34 @@ public class Main {
         Output output = new Output();
         Story story = new Story();
         Rest rest = new Rest();
-        Battle battle = new Battle();
 
         story.startStory(0);
 
         story.startStory(1);
 
+        story.startStory(2);
+
         //初回の休憩ターンは強化できない
         rest.noRest();
 
+        battle.start(CharacterGenerate.getInstance().getCharacters());
 
+    }
 
-        battle.start();
+    public static void Rest(){
 
+        Rest rest = new Rest();
 
-
-
-
-        try{
-            Thread.sleep(1000);
-        } catch (InterruptedException e){
-            output.printSystem("スリープが中断された...だと？！");
-            Thread.currentThread().interrupt();
+        if(rest.Rest()){ //強化をした場合trueになる
+            rest.noRest();
         }
 
-        output.printSystem("おわり");
+        battle.start(CharacterGenerate.getInstance().getCharacters());
+    }
 
+    public static void GameOver(){
 
-
+        Story story = new Story();
+        story.startStory(444);
     }
 }

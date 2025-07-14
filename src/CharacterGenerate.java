@@ -44,7 +44,7 @@ public class CharacterGenerate {
             if(moji.equals(DataLoader.getInstance().getNameData(i))){
                 for(int j = 0; j < CHARACTER_MAX; j++){
                     if(character[j] == null){
-                        character[j] = new Character(i,DataLoader.getInstance().getNameData(i),DataLoader.getInstance().getHealthData(i),DataLoader.getInstance().getAttackData(i),DataLoader.getInstance().getSpeedData(i),DataLoader.getInstance().getMagicData(i),DataLoader.getInstance().getMagicCostData(i));
+                        character[j] = new Character(i,DataLoader.getInstance().getNameData(i),DataLoader.getInstance().getHealthData(i),DataLoader.getInstance().getAttackData(i),DataLoader.getInstance().getSpeedData(i),DataLoader.getInstance().getMagicData(i),DataLoader.getInstance().getMagicCostData(i),DataLoader.getInstance().getMagicPowerData(DataLoader.getInstance().getMagicData(i)));
                         break;
                     }
                 }
@@ -52,17 +52,19 @@ public class CharacterGenerate {
         }
     }
 
-    public Character getCharacter(int number){
-        if(number < CHARACTER_MAX && character[number] != null){
+    public Character getCharacter(int number) {
+        if (number < CHARACTER_MAX && character[number] != null) {
             return character[number];
         }
         return null;
     }
-
     public int getCHARACTER_MAX(){
         return CHARACTER_MAX;
     }
 
+    public Character[] getCharacters(){
+        return character;
+    }
 
 
 }

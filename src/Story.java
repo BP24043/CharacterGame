@@ -103,11 +103,67 @@ public class Story {
 
             input.getEnter();
         }
-        else if(type == 1){
-            output.printSystem("～開幕～\n");
-        }
         else if(type == 2){
+            output.printSystem("～数日後～");
+            output.printSystem("「名前を失う」というのは本当らしく、");
+            output.printSystem("家族や友人の誰もが名前を忘れていました。");
+            output.printSystem("書物からも消えている徹底ぶりです。");
 
+            input.getEnter();
+
+            output.printSystem("あなたの周りには杖によって生まれた「文字」が戯れていて、");
+            output.printSystem("ペットみたいで見ていて面白いですが、");
+            output.printSystem("名前が無いと言うのは普通に不便です。");
+
+            input.getEnter();
+
+            output.printSystem("そこであなたは思い出します。");
+            output.printSystem("前に読んだREAD MEは一部が欠損していたこと。");
+            output.printSystem("杖を拾ったダンジョンにはまだ続きがあったこと。");
+
+            input.getEnter();
+
+            output.printSystem("もしかしたらあそこに名前を取り戻す手がかりがあるかも。");
+            output.printSystem("あなたは、再びダンジョンに向けて出発しました。");
+            output.printSystem("小さな仲間たちと名操の杖を携えて...");
+
+            input.getEnter();
+
+            output.printSystem("～～～名前バトルゲーム「名操の杖」遊び方～～～\n");
+            output.printSystem("あなたは名前を取り戻すべく" + ANSI_BOLD + "ダンジョンの最奥部を目指します。" + ANSI_RESET);
+            output.printSystem("しかし、各フロアには敵が立ちはだかっていて突破は困難です。");
+            output.printSystem("駆け出し冒険者である貴方はボコボコにされてしまうでしょう。");
+
+            input.getEnter();
+
+            output.printSystem("そこで、名操の杖によって召喚した文字たちに戦ってもらいます。");
+            output.printSystem("各文字には" + ANSI_BOLD + "個性があり、" + ANSI_RESET + "それぞれ " + ANSI_BOLD + "魔法を扱うことができます。" + ANSI_RESET);
+            output.printSystem("敵を倒すと１文字だけ" + ANSI_BOLD + "強化することもできます。" + ANSI_RESET);
+
+            input.getEnter();
+
+            output.printSystem("敵を攻撃して体力を0にすれば勝利できます。");
+            output.printSystem("また、15秒間耐える事でも疲労で勝利したことになります。");
+            output.printSystem("ダンジョン地下5階を目指して頑張ろう！");
+
+            input.getEnter();
+
+        }
+        else if(type == 3){
+
+        }
+        else if(type == 444){
+
+            input.getEnter();
+
+            output.printSystem("～ゲームオーバー～");
+            output.printSystem("文字たちが倒されていまい、");
+            output.printSystem("あなたは魔物の一撃で地にひれ伏してしまう。");
+            output.printSystem("誰にも知られることなく、ここで冒険が終わるのだと直感する。");
+            output.printSystem("あぁ、もっと強い名前を持っていれば...\n");
+
+            output.printSystem("また一人、このダンジョンで無名の冒険者が行方不明になるのだった...");
+            output.printSystem("Thank You For Playing!");
         }
     }
 }
